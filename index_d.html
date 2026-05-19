@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Unterweisung - Monteure NDF</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    img {
+      max-width: 90%;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+    }
+
+    audio {
+      color: #4CAF50
+    }
+
+    #quiz-button {
+      display: none;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    #audio-player {
+      background-color: #d9ecff;
+      padding: 5px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Unterweisung Sommerzeit</h2>
+
+  <img id="bild" src="bilder/bild1.jpg" alt="Bild 1">
+
+  <br>
+  <div class="controls">
+
+    <audio id="audio-player" controls>
+      <source id="audio-source" src="" type="audio/mpeg">
+    </audio>
+
+    <div class="nav-buttons">
+      <button onclick="ersteSeite()">⏮ first page</button>
+      <button onclick="zurueck()">◀ back</button>
+      <button id="weiter-button" onclick="weiter()">next page ▶</button>
+      <button id="letzte-button" onclick="letzteSeite()">last page ⏭</button>
+      <!-- Quiz-Button, erscheint nur auf letzter Seite -->
+      <a href="quiz.html"><button id="quiz-button">🧠 start quiz</button></a>
+    </div>
+
+  </div>
+
+  <!-- Quiz-Button, erscheint nur auf letzter Seite -->
+  <a href="quiz.html"><button id="quiz-button">🧠 start quiz</button></a>
+
+
+  <p>Seite <span id="seite">1</span> von <span id="gesamtseiten">5</span></p>
+
+
+
+  <script>
+    // 🔢 Nur existierende Bilder eintragen
+    const bilder = [
+      "bilder/bild1.jpg",
+      "bilder/bild2.jpg",
+      "bilder/bild3.jpg",
+      "bilder/bild4.jpg",
+      "bilder/bild5.jpg",
+      "bilder/bild6.jpg",
+      "bilder/bild7.jpg",
+      "bilder/bild8.jpg",
+      "bilder/bild9.jpg",
+      "bilder/bild10.jpg",
+      "bilder/bild11.jpg",
+      "bilder/bild12.jpg",
+      "bilder/bild13.jpg",
+      "bilder/bild14.jpg",
+      "bilder/bild15.jpg",
+      "bilder/bild16.jpg",
+      "bilder/bild17.jpg",
+      "bilder/bild18.jpg",
+      "bilder/bild19.jpg",
+      "bilder/bild20.jpg",
+      "bilder/bild21.jpg",
+      "bilder/bild22.jpg",
+      "bilder/bild23.jpg",
+      "bilder/bild24.jpg",
+      "bilder/bild25.jpg",
+      "bilder/bild26.jpg",
+      "bilder/bild27.jpg",
+      "bilder/bild28.jpg",
+      "bilder/bild29.jpg",
+      "bilder/bild30.jpg",
+      "bilder/bild31.jpg",
+      "bilder/bild32.jpg",
+      "bilder/bild33.jpg",
+      "bilder/bild34.jpg",
+      "bilder/bild35.jpg",
+      "bilder/bild36.jpg",
+      "bilder/bild37.jpg",
+      "bilder/bild38.jpg",
+      "bilder/bild39.jpg",
+      "bilder/bild40.jpg",
+      "bilder/bild41.jpg",
+      "bilder/bild42.jpg",
+      "bilder/bild43.jpg",
+      "bilder/bild44.jpg",
+      "bilder/bild45.jpg"
+    ];
+
+    const audio = [
+      "audio/audio1.mp3",
+      "audio/audio2.mp3",
+      "audio/audio3.mp3",
+      "audio/audio4.mp3",
+      "audio/audio5.mp3",
+      "audio/audio6.mp3",
+      "audio/audio7.mp3",
+      "audio/audio8.mp3",
+      "audio/audio9.mp3",
+      "audio/audio10.mp3",
+      "audio/audio11.mp3",
+      "audio/audio12.mp3",
+      "audio/audio13.mp3",
+      "audio/audio14.mp3",
+      "audio/audio15.mp3",
+      "audio/audio16.mp3",
+      "audio/audio17.mp3",
+      "audio/audio18.mp3",
+      "audio/audio19.mp3",
+      "audio/audio20.mp3",
+      "audio/audio21.mp3",
+      "audio/audio22.mp3",
+      "audio/audio23.mp3",
+      "audio/audio24.mp3",
+      "audio/audio25.mp3",
+      "audio/audio26.mp3",
+      "audio/audio27.mp3",
+      "audio/audio28.mp3",
+      "audio/audio29.mp3",
+      "audio/audio30.mp3",
+      "audio/audio31.mp3",
+      "audio/audio32.mp3",
+      "audio/audio33.mp3",
+      "audio/audio34.mp3",
+      "audio/audio35.mp3",
+      "audio/audio36.mp3",
+      "audio/audio37.mp3",
+      "audio/audio38.mp3",
+      "audio/audio39.mp3",
+      "audio/audio40.mp3",
+      "audio/audio41.mp3",
+      "audio/audio42.mp3",
+      "audio/audio43.mp3",
+      "audio/audio44.mp3",
+      "audio/audio45.mp3"
+    ];
+
+    let aktuelleSeite = 0;
+
+    function zeigeBild(index) {
+      const img = document.getElementById("bild");
+      img.src = bilder[index];
+      img.alt = `Bild ${index + 1}`;
+      document.getElementById("seite").textContent = index + 1;
+
+      const player = document.getElementById("audio-player");
+      const source = document.getElementById("audio-source");
+
+      // vorher stoppen
+      player.pause();
+      player.currentTime = 0;
+
+      source.src = audio[index];
+
+      player.load();
+
+      // erst starten wenn genug geladen wurde
+      player.addEventListener("canplaythrough", function () {
+        player.play();
+      }, { once: true });
+
+      // Quiz-Button und Weiter-/Letzte-Buttons steuern
+      const quizBtn = document.getElementById("quiz-button");
+      const weiterBtn = document.getElementById("weiter-button");
+      const letzteBtn = document.getElementById("letzte-button");
+
+      const istLetztesBild = (index === bilder.length - 1);
+      quizBtn.style.display = istLetztesBild ? "inline-block" : "none";
+      weiterBtn.style.display = istLetztesBild ? "none" : "inline-block";
+      letzteBtn.style.display = istLetztesBild ? "none" : "inline-block";
+
+
+    }
+
+    function ersteSeite() {
+      aktuelleSeite = 0;
+      zeigeBild(aktuelleSeite);
+    }
+
+    function letzteSeite() {
+      aktuelleSeite = bilder.length - 1;
+      zeigeBild(aktuelleSeite);
+    }
+
+    function weiter() {
+      if (aktuelleSeite < bilder.length - 1) {
+        aktuelleSeite++;
+        zeigeBild(aktuelleSeite);
+      }
+    }
+
+    function zurueck() {
+      if (aktuelleSeite > 0) {
+        aktuelleSeite--;
+        zeigeBild(aktuelleSeite);
+      }
+    }
+
+    // Gesamtseiten anzeigen und erstes Bild laden
+    document.getElementById("gesamtseiten").textContent = bilder.length;
+    zeigeBild(aktuelleSeite);
+  </script>
+
+</body>
+
+</html>

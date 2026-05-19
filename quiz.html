@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz "Unterweisung - Monteure NDF"</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    #logo {
+      max-width: 300px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .result {
+      font-size: 20px;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    @media print {
+
+      button,
+      .nav {
+        display: none !important;
+      }
+    }
+
+    .ergebnis-box {
+      border: 3px solid #000;
+      padding: 30px;
+      margin-top: 20px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+    }
+
+    .translate-btn {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 14px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- STARTSEITE -->
+  <div id="start-screen">
+    <img id="logo" src="logo.png" alt="Firmenlogo">
+    <h1>Willkommen zum Quiz: "Unterweisung - Monteure NDF"</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+      <button class="translate-btn" onclick="openStartTextTranslate()">Google Translator</button>
+    </div>
+    <div id="start-text">
+      <p>- Das Quiz besteht aus 6 Fragen.</p>
+      <p>- Bestanden ist dieses Quiz mit mindestens 5 richtig beantworteten Fragen.</p>
+      <p>- Sollten Sie nicht bestehen, müssen Sie von vorne beginnen.</p>
+      <p>- Am Ende speichern Sie bitte Ihren Schulungsnachweis und senden diesen per E-Mail an:
+        arbeitssicherheit@tpholding.de</p>
+      <p> (Wählen Sie anstelle des Druckers "als pdf speichern" aus, um den Nachweis an einen beliebigen Ort zu
+        speichern.)</p>
+      </br>
+      <p>Bitte geben Sie Ihren Namen und das aktuelle Datum ein, bevor Sie mit dem Quiz starten.</p>
+      </br>
+    </div>
+    <label>Datum:
+      <input type="date" id="input-datum" required>
+    </label></br>
+    <label>Name:
+      <input type="text" id="input-name" required>
+    </label></br>
+    <button onclick="startQuiz()">🧠 start quiz</button>
+  </div>
+
+  <!-- FRAGEN -->
+  <div id="quiz-screen" class="hidden">
+    <img id="logo" src="logo.png" alt="Firmenlogo">
+    <div id="frage-container"></div>
+    <div class="nav"></br>
+      <button onclick="zurueckZumStart()">⬅ back to start</button>
+      <button onclick="naechsteFrage()">next page ➡</button>
+    </div>
+  </div>
+
+  <!-- ERGEBNIS -->
+  <div id="result-screen" class="hidden">
+    <div class="ergebnis-box">
+      <img id="logo" src="logo.png" alt="Firmenlogo">
+      <h1>Ergebnis</h1>
+      <h1>&</h1>
+      <h1>Schulungsnachweis</h1>
+      <h1>Unterweisung - Monteure NDF</h1>
+      <h1>Der Beschäftigte wurde unterwiesen und hat an einer Kontrollprüfung teilgenommen.</h1>
+
+      <p><strong>Name:</strong> <span id="ausgabe-name"></span></p>
+      <p><strong>Datum:</strong> <span id="ausgabe-datum"></span></p>
+      <p><strong>Testergebnis:</strong> <span id="ausgabe-ergebnis"></span></p>
+      <div class="result">
+        </br>
+        <p>Mit dem Versenden der PDF-Datei bestätige ich die Schulung selbst durchgeführt und die Inhalte verstanden zu
+          haben.</p>
+      </div>
+    </div>
+    <button onclick="window.print()">💾 save as PDF</button>
+    <button onclick="location.reload()">🔁 start again</button>
+    <button onclick="window.location.href='index.html'">back to the script</button>
+  </div>
+
+  <script>
+    // ================================
+    // QUIZ-FRAGEN DEFINIEREN
+    // ================================
+    const fragen = [
+      {
+        frage: "Warum müssen Schutzbrille und Gehörschutz getragen werden?",
+        antworten: ["Damit die Kollegen professioneller aussehen", "Um Augen und Gehör vor Schäden zu schützen", "Damit Werkzeuge besser funktionieren"],
+        richtig: [1]
+      },
+      {
+        frage: "Was muss vor der Benutzung einer Leiter kontrolliert werden?",
+        antworten: ["Ob die Leiter stabil und unbeschädigt ist", "Ob die Leiter eine bestimmte Farbe hat", "Ob die Leiter neu gekauft wurde"],
+        richtig: [0]
+      },
+      {
+        frage: "Warum ist Baustellenstaub gefährlich?",
+        antworten: ["Weil er Werkzeuge schmutzig macht", "Weil feiner Staub die Lunge schädigen kann", "Weil Staub nur im Winter gefährlich ist"],
+        richtig: [1]
+      },
+      {
+        frage: "Was sollte auf Baustellen niemals blockiert werden?",
+        antworten: ["Flucht- und Rettungswege", "Werkzeugkisten", "Parkplätze"],
+        richtig: [0]
+      },
+      {
+        frage: "Was ist bei beschädigten elektrischen Kabeln zu tun?",
+        antworten: ["Weiterarbeiten, wenn das Kabel noch funktioniert", "Das Kabel sofort außer Betrieb nehmen", "Das Kabel mit Klebeband reparieren und weiter benutzen"],
+        richtig: [1]
+      },
+      {
+        frage: "Warum sind regelmäßige Pausen bei körperlich schwerer Arbeit wichtig?",
+        antworten: ["Damit die Arbeit länger dauert", "Damit Muskeln und Gelenke entlastet werden", "Damit Maschinen abkühlen können"],
+        richtig: [1]
+      }
+    ];
+
+
+    // ================================
+    // VARIABLEN
+    // ================================
+    let aktuelleFrage = 0;
+    let benutzerAntworten = [];
+    let name = "";
+    let datum = "";
+
+    // ================================
+    // STARTEN
+    // ================================
+    function startQuiz() {
+      name = document.getElementById("input-name").value.trim();
+      datum = document.getElementById("input-datum").value;
+
+      if (!name || !datum) {
+        alert("Bitte Name und Datum eingeben. (Please enter name and date.)");
+        return;
+      }
+
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+      zeigeFrage();
+    }
+
+    function zurueckZumStart() {
+      if (confirm("Willst du wirklich abbrechen und zum Start zurückkehren? (Do you really want to cancel and return to the start?)")) {
+        location.reload();
+      }
+    }
+
+    // ================================
+    // FRAGE ZEIGEN MIT GOOGLE TRANSLATE BUTTON
+    // ================================
+    function zeigeFrage() {
+      const frageObj = fragen[aktuelleFrage];
+      const container = document.getElementById("frage-container");
+
+      // HTML für die aktuelle Frage + Übersetzen-Button
+      container.innerHTML = `
+        <h2>Frage ${aktuelleFrage + 1} von ${fragen.length}</h2>
+        <div style="text-align:center;">
+          <button class="translate-btn" onclick="openQuestionTranslate(${aktuelleFrage})">Google Translator</button>
+        </div>
+        <p class="question">${frageObj.frage}</p>
+        ${frageObj.antworten.map((antwort, i) => `
+          <label>
+            <input type="checkbox" name="antwort" value="${i}">
+            ${antwort}
+          </label>
+        `).join("")}
+        `;
+    }
+
+    // ================================
+    // EINZELNE FRAGE IN GOOGLE TRANSLATE ÖFFNEN
+    // ================================
+    function openQuestionTranslate(index) {
+      const f = fragen[index];
+      let text = `Frage: ${f.frage}\n`;
+      f.antworten.forEach((a, i) => {
+        text += `${i + 1}. ${a}\n`;
+      });
+      const url = "https://translate.google.com/?sl=de&tl=en&text=" + encodeURIComponent(text) + "&op=translate";
+      window.open(url, "_blank");
+    }
+
+    function openStartTextTranslate() {
+      // Alles innerhalb des Starttext-Bereichs auswählen
+      const startText = document.getElementById("start-text").innerText;
+      const url = "https://translate.google.com/?sl=de&tl=en&text=" + encodeURIComponent(startText) + "&op=translate";
+      window.open(url, "_blank");
+    }
+
+
+
+    // ================================
+    // NÄCHSTE FRAGE ODER AUSWERTUNG
+    // ================================
+    function naechsteFrage() {
+      const auswahl = Array.from(document.querySelectorAll('input[name="antwort"]:checked')).map(el => parseInt(el.value));
+      benutzerAntworten[aktuelleFrage] = auswahl;
+
+      aktuelleFrage++;
+
+      if (aktuelleFrage < fragen.length) {
+        zeigeFrage();
+      } else {
+        auswertung();
+      }
+    }
+
+    // ================================
+    // AUSWERTUNG
+    // ================================
+    function auswertung() {
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.remove("hidden");
+
+      let punkte = 0;
+
+      fragen.forEach((frage, index) => {
+        const richtig = frage.richtig.sort().join();
+        const gegeben = (benutzerAntworten[index] || []).sort().join();
+        if (richtig === gegeben) {
+          punkte++;
+        }
+      });
+
+      const bestanden = punkte >= 5;
+
+      document.getElementById("ausgabe-name").textContent = name;
+      document.getElementById("ausgabe-datum").textContent = datum;
+      document.getElementById("ausgabe-ergebnis").textContent = bestanden
+        ? `✅ Bestanden (${punkte} von ${fragen.length} richtig)`
+        : `❌ Leider nicht bestanden (${punkte} von ${fragen.length} richtig)`;
+    }
+  </script>
+</body>
+
+</html>
