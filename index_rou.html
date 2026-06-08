@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Unterweisung - Monteure NDF</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    img {
+      max-width: 90%;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+    }
+
+    audio {
+      color: #4CAF50
+    }
+
+    #quiz-button {
+      display: none;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    #audio-player {
+      background-color: #d9ecff;
+      padding: 5px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Unterweisung - Monteure NDF</h2>
+
+  <img id="bild" src="bilder_rou/bild1.jpg" alt="Bild 1">
+
+  <br>
+  <div class="controls">
+
+    <audio id="audio-player" controls>
+      <source id="audio-source" src="" type="audio/mpeg">
+    </audio>
+
+    <div class="nav-buttons">
+      <button onclick="ersteSeite()">⏮ first page</button>
+      <button onclick="zurueck()">◀ back</button>
+      <button id="weiter-button" onclick="weiter()">next page ▶</button>
+      <button id="letzte-button" onclick="letzteSeite()">last page ⏭</button>
+      <!-- Quiz-Button, erscheint nur auf letzter Seite -->
+      <a href="quiz.html"><button id="quiz-button">🧠 start quiz</button></a>
+    </div>
+
+  </div>
+
+  <!-- Quiz-Button, erscheint nur auf letzter Seite -->
+  <a href="quiz.html"><button id="quiz-button">🧠 start quiz</button></a>
+
+
+  <p>Seite <span id="seite">1</span> von <span id="gesamtseiten">5</span></p>
+
+
+
+  <script>
+    // 🔢 Nur existierende Bilder eintragen
+    const bilder = [
+      "bilder_rou/bild1.jpg",
+      "bilder_rou/bild2.jpg",
+      "bilder_rou/bild3.jpg",
+      "bilder_rou/bild4.jpg",
+      "bilder_rou/bild5.jpg",
+      "bilder_rou/bild6.jpg",
+      "bilder_rou/bild7.jpg",
+      "bilder_rou/bild8.jpg",
+      "bilder_rou/bild9.jpg",
+      "bilder_rou/bild10.jpg",
+      "bilder_rou/bild11.jpg",
+      "bilder_rou/bild12.jpg",
+      "bilder_rou/bild13.jpg",
+      "bilder_rou/bild14.jpg",
+      "bilder_rou/bild15.jpg",
+      "bilder_rou/bild16.jpg",
+      "bilder_rou/bild17.jpg",
+      "bilder_rou/bild18.jpg",
+      "bilder_rou/bild19.jpg",
+      "bilder_rou/bild20.jpg",
+      "bilder_rou/bild21.jpg",
+      "bilder_rou/bild22.jpg",
+      "bilder_rou/bild23.jpg",
+      "bilder_rou/bild24.jpg",
+      "bilder_rou/bild25.jpg",
+      "bilder_rou/bild26.jpg",
+      "bilder_rou/bild27.jpg",
+      "bilder_rou/bild28.jpg",
+      "bilder_rou/bild29.jpg",
+      "bilder_rou/bild30.jpg",
+      "bilder_rou/bild31.jpg",
+      "bilder_rou/bild32.jpg",
+      "bilder_rou/bild33.jpg",
+      "bilder_rou/bild34.jpg",
+      "bilder_rou/bild35.jpg",
+      "bilder_rou/bild36.jpg",
+      "bilder_rou/bild37.jpg",
+      "bilder_rou/bild38.jpg",
+      "bilder_rou/bild39.jpg",
+      "bilder_rou/bild40.jpg",
+      "bilder_rou/bild41.jpg",
+      "bilder_rou/bild42.jpg",
+      "bilder_rou/bild43.jpg",
+      "bilder_rou/bild44.jpg",
+      "bilder_rou/bild45.jpg",
+      "bilder_rou/bild46.jpg",
+      "bilder_rou/bild47.jpg"
+    ];
+
+    const audio = [
+      "audio_rou/audio1.mp3",
+      "audio_rou/audio2.mp3",
+      "audio_rou/audio3.mp3",
+      "audio_rou/audio4.mp3",
+      "audio_rou/audio5.mp3",
+      "audio_rou/audio6.mp3",
+      "audio_rou/audio7.mp3",
+      "audio_rou/audio8.mp3",
+      "audio_rou/audio9.mp3",
+      "audio_rou/audio10.mp3",
+      "audio_rou/audio11.mp3",
+      "audio_rou/audio12.mp3",
+      "audio_rou/audio13.mp3",
+      "audio_rou/audio14.mp3",
+      "audio_rou/audio15.mp3",
+      "audio_rou/audio16.mp3",
+      "audio_rou/audio17.mp3",
+      "audio_rou/audio18.mp3",
+      "audio_rou/audio19.mp3",
+      "audio_rou/audio20.mp3",
+      "audio_rou/audio21.mp3",
+      "audio_rou/audio22.mp3",
+      "audio_rou/audio23.mp3",
+      "audio_rou/audio24.mp3",
+      "audio_rou/audio25.mp3",
+      "audio_rou/audio26.mp3",
+      "audio_rou/audio27.mp3",
+      "audio_rou/audio28.mp3",
+      "audio_rou/audio29.mp3",
+      "audio_rou/audio30.mp3",
+      "audio_rou/audio31.mp3",
+      "audio_rou/audio32.mp3",
+      "audio_rou/audio33.mp3",
+      "audio_rou/audio34.mp3",
+      "audio_rou/audio35.mp3",
+      "audio_rou/audio36.mp3",
+      "audio_rou/audio37.mp3",
+      "audio_rou/audio38.mp3",
+      "audio_rou/audio39.mp3",
+      "audio_rou/audio40.mp3",
+      "audio_rou/audio41.mp3",
+      "audio_rou/audio42.mp3",
+      "audio_rou/audio43.mp3",
+      "audio_rou/audio44.mp3",
+      "audio_rou/audio45.mp3",
+      "audio_rou/audio46.mp3",
+      "audio_rou/audio47.mp3"
+    ];
+
+    let aktuelleSeite = 0;
+
+    function zeigeBild(index) {
+      const img = document.getElementById("bild");
+      img.src = bilder[index];
+      img.alt = `Bild ${index + 1}`;
+      document.getElementById("seite").textContent = index + 1;
+
+      const player = document.getElementById("audio-player");
+      const source = document.getElementById("audio-source");
+
+      // vorher stoppen
+      player.pause();
+      player.currentTime = 0;
+
+      source.src = audio[index];
+
+      player.load();
+
+      // erst starten wenn genug geladen wurde
+      player.addEventListener("canplaythrough", function () {
+        player.play();
+      }, { once: true });
+
+      // Quiz-Button und Weiter-/Letzte-Buttons steuern
+      const quizBtn = document.getElementById("quiz-button");
+      const weiterBtn = document.getElementById("weiter-button");
+      const letzteBtn = document.getElementById("letzte-button");
+
+      const istLetztesBild = (index === bilder.length - 1);
+      quizBtn.style.display = istLetztesBild ? "inline-block" : "none";
+      weiterBtn.style.display = istLetztesBild ? "none" : "inline-block";
+      letzteBtn.style.display = istLetztesBild ? "none" : "inline-block";
+
+
+    }
+
+    function ersteSeite() {
+      aktuelleSeite = 0;
+      zeigeBild(aktuelleSeite);
+    }
+
+    function letzteSeite() {
+      aktuelleSeite = bilder.length - 1;
+      zeigeBild(aktuelleSeite);
+    }
+
+    function weiter() {
+      if (aktuelleSeite < bilder.length - 1) {
+        aktuelleSeite++;
+        zeigeBild(aktuelleSeite);
+      }
+    }
+
+    function zurueck() {
+      if (aktuelleSeite > 0) {
+        aktuelleSeite--;
+        zeigeBild(aktuelleSeite);
+      }
+    }
+
+    // Gesamtseiten anzeigen und erstes Bild laden
+    document.getElementById("gesamtseiten").textContent = bilder.length;
+    zeigeBild(aktuelleSeite);
+  </script>
+
+</body>
+
+</html>
